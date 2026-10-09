@@ -6,39 +6,39 @@ Vector_2: .word -1, 2, -3, 4, -5, 6, -7, 8, -9
 .globl main
 
 main:
-    # s0 = i (el contador del for), s1 = resultado acumulado
+    # s0 = i (el contador del bucle for), s1 = producto punto acumulado
     addi s0, x0, 0        # i = 0
     addi s1, x0, 0        # resultado = 0
-    addi t2, x0, 9        # límite del ciclo (9 elementos)
+    addi t2, x0, 9        # el límite del ciclo es de 9 elementos
 
     # Cargamos las direcciones base de los vectores usando instrucciones base
     lui t0, %hi(Vector_1)
-    addi t0, t0, %lo(Vector_1)    # t0 apunta a Vector_1
+    addi t0, t0, %lo(Vector_1)    # t0 apunta al Vector_1
 
     lui t1, %hi(Vector_2)
-    addi t1, t1, %lo(Vector_2)    # t1 apunta a Vector_2
+    addi t1, t1, %lo(Vector_2)    # t1 apunta al Vector_2
 
 ciclo_for:
     bge s0, t2, fin_programa  # si i >= 9, salimos del ciclo
 
-    # Calculamos la dirección del elemento actual: base + (i * 4 bytes)
+    # Calculamos la dirección del elemento actual que es: base + (i * 4 bytes)
     slli t3, s0, 2    # t3 = i * 4
-    add t4, t0, t3    # t4 = dirección de Vector_1[i]
-    lw a0, 0(t4)      # a0 = Vector_1[i]
+    add t4, t0, t3    # t4 = la dirección de Vector_1[i]
+    lw a0, 0(t4)      # a0 = el Vector_1[i]
 
-    add t5, t1, t3    # t5 = dirección de Vector_2[i]
-    lw a1, 0(t5)      # a1 = Vector_2[i]
+    add t5, t1, t3    # t5 = la dirección de Vector_2[i]
+    lw a1, 0(t5)      # a1 = el Vector_2[i]
 
-    # Multiplicación directa sin función auxiliar
+    # Hacemos una multiplicación directa sin utilizar la función auxiliar
     mul t6, a0, a1    # t6 = Vector_1[i] * Vector_2[i]
 
-    # Sumamos el resultado al acumulador total: resultado += producto
+    # Sumamos el resultado al acumulador total que es: resultado += producto
     add s1, s1, t6    # s1 = s1 + t6
 
     # Incrementamos el contador i++
     addi s0, s0, 1    # i = i + 1
-    jal x0, ciclo_for # repetimos el ciclo
+    jal x0, ciclo_for # y volvemos a repetir el ciclo
 
 fin_programa:
-    # Fin del programa (el resultado final queda en el registro s1)
+    # Fin del programa y el resultado final queda en el registro s1
     jalr x0, ra, 0
